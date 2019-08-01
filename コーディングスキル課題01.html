@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <meta charset="utf-8">
+<title>あたり判定</title>
+</head>
+<body>
+<script>
+function setup(){
+  //canvasとimgの設定
+  var canvas = document.getElementById('SimpleCanvas');
+  if (!canvas || !canvas.getContext) {
+    return false;
+  }
+  var context = canvas.getContext('2d');
+  var img = new Image();
+  var img02 = new Image();
+  img.src = 'img/image.png'
+  img02.src = 'img/image02.png'
+
+//自機データ
+  var ship = [];
+  ship_data = window.prompt("自機データを入力してください", "100 100 70 100");
+  ship = ship_data.split(' ');
+
+//敵数入力
+  var enemy = [];
+  var enemyCount = 0
+  enemyCount = window.prompt("敵の数を入力してください","3");
+  enemy = new Array(enemyCount);
+
+//敵数分値の入力
+  for(var i = 0; i < enemyCount; i++){
+    var enemys_data = [];
+    enemys_data = window.prompt("敵"+ (i+1)+"データを入力してください","");
+    enemy[i] = enemys_data.split(' ');
+  }
+
+//画像描画処理
+  var ownmachine01 = ship[0]; 
+  var ownmachine02 = ship[1];
+  var ownmachine03 = ship[2];
+  var ownmachine04 = ship[3];
+  img.onload =  function onImageLoad() {
+      context.drawImage(img,ownmachine01,ownmachine02,ownmachine03,ownmachine04);
+  }
+    
+  //自機データ
+    var ship = {
+      x : ship[0],
+      y : ship[1],
+      width : ship[2],
+      height : ship[3]
+    };
+
+  //敵データ
+    for (var i = 0; i < enemyCount; i++) {
+        var enemy_data = {
+        x : enemy[i][0],
+        y : enemy[i][1],
+        width : enemy[i][2],
+        height : enemy[i][3]
+    };
+
+        enemyaircraft01 = enemy[i][0];
+        enemyaircraft02 = enemy[i][1];
+        enemyaircraft03 = enemy[i][2];
+        enemyaircraft04 =  enemy[i][3];    
+    
+// 一時停止処理（これがないと描画が追い付かない）
+function sleep(waitMsec) {
+  var startMsec = new Date(); 
+  while (new Date() - startMsec < waitMsec);
+}
+sleep(1000);    
+
+//敵機画像描画
+        context.drawImage(img02,enemyaircraft01,enemyaircraft02,enemyaircraft03,enemyaircraft04);
+
+  //敵あたり判定
+      if(
+        Math.abs(enemy_data.x - ship.x) < enemy_data.width/2 + ship.width/2 //横の判定
+        &&
+        Math.abs(enemy_data.y - ship.y) < enemy_data.height/2 + ship.height/2 //縦の判定
+      ){
+        //結果をhtmlページに表示
+        document.getElementById('enemy_hitlog').insertAdjacentHTML('beforeend', '<p>敵機' + (i + 1) + 'が当たり</p>');
+      }
+    };
+}
+
+
+</script>
+<body onload="setup();">
+<canvas id="SimpleCanvas" width="500" height="500"></canvas>
+<p id="enemy_hitlog">
+</p>
+</body>
+</html>
